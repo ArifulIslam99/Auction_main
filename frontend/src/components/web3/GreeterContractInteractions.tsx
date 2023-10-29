@@ -308,7 +308,7 @@ export const GreeterContractInteractions: FC = () => {
             <FormControl>
               <FormLabel>Auction Status</FormLabel>
               <Input
-                placeholder={soldStatus? 'Running' : 'Auction End'}
+                placeholder={!soldStatus? 'Running' : 'Auction End'}
                 readOnly
               />
             </FormControl>
@@ -330,7 +330,7 @@ export const GreeterContractInteractions: FC = () => {
             disabled={updateIsLoading}
             type='button'
             // onClick={reverseGreeting}
-            onClick={() => { fetchCurrentBid(); fetchCurrentBidder(); fetchCurrentOwner() }}
+            onClick={() => { fetchCurrentBid(); fetchCurrentBidder(); fetchCurrentOwner(); fetchSoldStatus() }}
           >
             Update Bid Stauts
           </Button>
