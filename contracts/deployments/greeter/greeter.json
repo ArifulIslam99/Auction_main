@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x59ecad04ae11b59f8ae668697802cdee6a0db7371a9f6c5ac70b62e91d7be4ae",
+    "hash": "0x371334e2251d3905ad34a379418d1ab681704f4f9b56d0c246b39ce6b20948bc",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0",
     "build_info": {
@@ -183,6 +183,22 @@
         "args": [],
         "default": false,
         "docs": [],
+        "label": "get_current_owner",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0x4c52d373"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
         "label": "get_current_bid",
         "mutates": false,
         "payable": false,
@@ -275,7 +291,7 @@
         "docs": [
           " Sets `message` to the given value."
         ],
-        "label": "set_message",
+        "label": "set_product_name",
         "mutates": true,
         "payable": false,
         "returnType": {
@@ -285,23 +301,7 @@
           ],
           "type": 7
         },
-        "selector": "0x1fe7426f"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [],
-        "label": "reverse_message",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 7
-        },
-        "selector": "0x7aee9f0f"
+        "selector": "0x3198798b"
       }
     ]
   },

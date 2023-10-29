@@ -60,6 +60,12 @@ mod greeter {
         }
 
         #[ink(message)]
+        pub fn get_current_owner(&self) ->  AccountId {
+            self.current_owner.clone()
+        }
+
+
+        #[ink(message)]
         pub fn get_current_bid(&self) ->  Balance {
             self.current_bid.clone()
         }
@@ -137,9 +143,8 @@ mod greeter {
 
         /// Sets `message` to the given value.
         #[ink(message)]
-        pub fn set_message(&mut self, new_value: String) {
+        pub fn set_product_name(&mut self, new_value: String) {
             self.product = new_value.clone();
-
             let from = self.env().caller();
             self.env().emit_event(Greeted {
                 from: Some(from),
@@ -147,10 +152,7 @@ mod greeter {
             });
         }
 
-         #[ink(message)]
-        pub fn reverse_message(&mut self) {
-            self.product = self.product.chars().rev().collect::<String>();
-        }
+        
     }
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
