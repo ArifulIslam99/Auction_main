@@ -1,6 +1,7 @@
 import { ContractIds } from '@/deployments/deployments'
 import { contractTxWithToast } from '@/utils/contractTxWithToast'
-import { Button, Card, FormControl, FormLabel, Input, Stack } from '@chakra-ui/react'
+import { Box, Button, Card, FormControl, FormLabel, Input, SimpleGrid, Stack } from '@chakra-ui/react'
+import { Flex, Spacer } from '@chakra-ui/react'
 import {
   contractQuery,
   decodeOutput,
@@ -20,6 +21,7 @@ export const GreeterContractInteractions: FC = () => {
   const [greeterMessage, setGreeterMessage] = useState<string>()
   const [currentBidder, setCurrentBidder] = useState<string>()
   const [currentOwner, setCurrentOwner] = useState<string>()
+  const [soldStatus, setSoldStatus] = useState<boolean>()
   const [currentBid, setCurrentBid] = useState<string>()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>()
   const [updateIsLoading, setUpdateIsLoading] = useState<boolean>()
@@ -92,8 +94,8 @@ export const GreeterContractInteractions: FC = () => {
     fetchProduct()
   }, [contract])
 
-   // Fetch Current Owner
-   const fetchCurrentOwner = async () => {
+  // Fetch Current Owner
+  const fetchCurrentOwner = async () => {
     if (!contract || !api) return
 
     setFetchIsLoading(true)
@@ -102,6 +104,28 @@ export const GreeterContractInteractions: FC = () => {
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'getCurrentOwner')
       if (isError) throw new Error(decodedOutput)
       setCurrentOwner(output)
+    } catch (e) {
+      console.error(e)
+      toast.error('Error while fetching greeting. Try again…')
+      setGreeterMessage(undefined)
+    } finally {
+      setFetchIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    fetchProduct()
+  }, [contract])
+
+  // Fetch Sold Status
+  const fetchSoldStatus = async () => {
+    if (!contract || !api) return
+
+    setFetchIsLoading(true)
+    try {
+      const result = await contractQuery(api, '', contract, 'get_sold_status')
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_sold_status')
+      if (isError) throw new Error(decodedOutput)
+      setSoldStatus(output)
     } catch (e) {
       console.error(e)
       toast.error('Error while fetching greeting. Try again…')
@@ -124,7 +148,7 @@ export const GreeterContractInteractions: FC = () => {
     // Send transaction
     setUpdateIsLoading(true)
     try {
-      await contractTxWithToast(api, activeAccount.address, contract, 'setMessage', {}, [
+      await contractTxWithToast(api, activeAccount.address, contract, 'setProductName', {}, [
         newMessage,
       ])
       reset()
@@ -158,8 +182,8 @@ export const GreeterContractInteractions: FC = () => {
     }
   }
 
-   //Sell the product
-   const finalizeProduct = async () => {
+  //Sell the product
+  const finalizeProduct = async () => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       toast.error("Wallet is not connected. Try again...")
       return
@@ -167,7 +191,7 @@ export const GreeterContractInteractions: FC = () => {
 
     setUpdateIsLoading(true)
     try {
-      await contractTxWithToast(api, activeAccount.address, contract, "finalize_product", {},[])
+      await contractTxWithToast(api, activeAccount.address, contract, "finalize_product", {}, [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -186,7 +210,7 @@ export const GreeterContractInteractions: FC = () => {
 
     setUpdateIsLoading(true)
     try {
-      await contractTxWithToast(api, activeAccount.address, contract, "take_back_money", {},[])
+      await contractTxWithToast(api, activeAccount.address, contract, "take_back_money", {}, [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -201,79 +225,103 @@ export const GreeterContractInteractions: FC = () => {
 
   return (
     <>
+
+    
+      <SimpleGrid columns={2} spacing={10}>
+        <Box height='80px'>
+          <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+            <FormControl>
+              <FormLabel>Product Name</FormLabel>
+              <Input
+                placeholder={fetchIsLoading || !contract ? 'Loading…' : greeterMessage}
+
+                readOnly
+              />
+            </FormControl>
+          </Card>
+        </Box>
+        <Box height='80px'>
+          {/* Fetched Current Bidder */}
+          <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+            <FormControl>
+              <FormLabel>Current Bidder</FormLabel>
+              <Input
+                placeholder={fetchIsLoading || !contract ? 'Loading…' : currentBidder}
+
+                readOnly
+              />
+            </FormControl>
+          </Card>
+        </Box>
+        <Box height='80px'>
+          {/* Fetched Current Bid */}
+          <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+            <FormControl>
+              <FormLabel>Current Bid</FormLabel>
+              <Input
+                placeholder={fetchIsLoading || !contract ? 'Loading…' : currentBid}
+
+                readOnly
+              />
+            </FormControl>
+          </Card>
+        </Box>
+        <Box height='80px'>
+          {/* Fetched Current Bid */}
+          <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+            <FormControl>
+              <FormLabel>Current Owner</FormLabel>
+              <Input
+                placeholder={fetchIsLoading || !contract ? 'Loading…' : currentOwner}
+
+                readOnly
+              />
+            </FormControl>
+          </Card>
+
+        </Box>
+        <Box height='80px'>
+          {/* Update Product Name */}
+          <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+            <form onSubmit={handleSubmit(updateGreeting)}>
+              <Stack direction="row" spacing={2} align="end">
+                <FormControl>
+                  <FormLabel>Change Product Name</FormLabel>
+                  <Input disabled={updateIsLoading} {...register('newMessage')} />
+                </FormControl>
+                <Button
+                  type="submit"
+                  mt={4}
+                  colorScheme="purple"
+                  isLoading={updateIsLoading}
+                  disabled={updateIsLoading}
+                >
+                  Submit
+                </Button>
+              </Stack>
+            </form>
+          </Card>
+        </Box>
+        <Box height='80px'>
+          {/* Fetched Current Bid */}
+          <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+            <FormControl>
+              <FormLabel>Auction Status</FormLabel>
+              <Input
+                placeholder={soldStatus? 'Running' : 'Auction End'}
+                readOnly
+              />
+            </FormControl>
+          </Card>
+
+        </Box>
+      </SimpleGrid>
+
       <div tw="flex grow flex-col space-y-4 max-w-[20rem]">
         {/* <h2 tw="text-center font-mono text-gray-400">Greeter Smart Contract</h2> */}
 
-        {/* Fetched Greeting */}
-        <Card variant="outline" p={4} bgColor="whiteAlpha.100">
-          <FormControl>
-            <FormLabel>Product Name</FormLabel>
-            <Input
-              placeholder={fetchIsLoading || !contract ? 'Loading…' : greeterMessage}
-
-              readOnly
-            />
-          </FormControl>
-        </Card>
-
-        {/* Fetched Current Bidder */}
-        <Card variant="outline" p={4} bgColor="whiteAlpha.100">
-          <FormControl>
-            <FormLabel>Current Bidder</FormLabel>
-            <Input
-              placeholder={fetchIsLoading || !contract ? 'Loading…' : currentBidder}
-
-              readOnly
-            />
-          </FormControl>
-        </Card>
-
-        {/* Fetched Current Bid */}
-        <Card variant="outline" p={4} bgColor="whiteAlpha.100">
-          <FormControl>
-            <FormLabel>Current Bid</FormLabel>
-            <Input
-              placeholder={fetchIsLoading || !contract ? 'Loading…' : currentBid}
-
-              readOnly
-            />
-          </FormControl>
-        </Card>
-
-        {/* Fetched Current Bid */}
-        <Card variant="outline" p={4} bgColor="whiteAlpha.100">
-          <FormControl>
-            <FormLabel>Current Owner</FormLabel>
-            <Input
-              placeholder={fetchIsLoading || !contract ? 'Loading…' : currentOwner}
-
-              readOnly
-            />
-          </FormControl>
-        </Card>
 
 
-
-        {/* Update Greeting */}
-        <Card variant="outline" p={4} bgColor="whiteAlpha.100">
-          <form onSubmit={handleSubmit(updateGreeting)}>
-            <Stack direction="row" spacing={2} align="end">
-              <FormControl>
-                <FormLabel>Change Product Name</FormLabel>
-                <Input disabled={updateIsLoading} {...register('newMessage')} />
-              </FormControl>
-              <Button
-                type="submit"
-                mt={4}
-                colorScheme="purple"
-                isLoading={updateIsLoading}
-                disabled={updateIsLoading}
-              >
-                Submit
-              </Button>
-            </Stack>
-          </form>
-        </Card>
 
         <Card variant="outline" p={4} bgColor="whatsapp.100">
           <Button
@@ -282,9 +330,9 @@ export const GreeterContractInteractions: FC = () => {
             disabled={updateIsLoading}
             type='button'
             // onClick={reverseGreeting}
-            onClick={() => { fetchCurrentBid(); fetchCurrentBidder(); fetchCurrentOwner()}}
+            onClick={() => { fetchCurrentBid(); fetchCurrentBidder(); fetchCurrentOwner() }}
           >
-            Updated Bid Stauts
+            Update Bid Stauts
           </Button>
         </Card>
 
@@ -298,7 +346,7 @@ export const GreeterContractInteractions: FC = () => {
 
           >
             Make a Bid!
-          </Button>  
+          </Button>
         </Card>
 
         <Card variant="outline" p={4} bgColor="whatsapp.100">

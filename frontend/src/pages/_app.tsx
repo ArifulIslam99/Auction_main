@@ -3,7 +3,7 @@ import { HotToastConfig } from '@/components/layout/HotToastConfig'
 import { env } from '@/config/environment'
 import { getDeployments } from '@/deployments/deployments'
 import GlobalStyles from '@/styles/GlobalStyles'
-import { ChakraProvider, DarkMode } from '@chakra-ui/react'
+import { ChakraProvider, DarkMode, background } from '@chakra-ui/react'
 import { cache } from '@emotion/css'
 import { CacheProvider } from '@emotion/react'
 import { UseInkathonProvider } from '@scio-labs/use-inkathon'
@@ -22,14 +22,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       <DefaultSeo
         dangerouslySetAllPagesToNoFollow={!env.isProduction}
         dangerouslySetAllPagesToNoIndex={!env.isProduction}
-        defaultTitle="ink!athon" // TODO
-        titleTemplate="%s | ink!athon" // TODO
-        description="Substrate-based Smart Contract & DApp Development Boilerplate" // TODO
+        defaultTitle="Auction House" // TODO
+        // titleTemplate="%s | ink!athon" // TODO
+        description="Sell Your Demand!" // TODO
         openGraph={{
           type: 'website',
           locale: 'en',
           url: env.url,
-          site_name: 'ink!athon', // TODO
+          site_name: 'Auction House', // TODO
           images: [
             {
               url: `${env.url}/images/cover.jpg`, // TODO
@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           ],
         }}
         twitter={{
-          handle: '@scio_xyz', // TODO
+          handle: '', // TODO
         }}
       />
 
@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <UseInkathonProvider
-        appName="ink!athon" // TODO
+        appName="Auction House" // TODO
         connectOnInit={true}
         defaultChain={env.defaultChain}
         deployments={getDeployments()}

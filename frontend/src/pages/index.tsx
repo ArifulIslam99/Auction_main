@@ -19,9 +19,9 @@ const HomePage: NextPage = () => {
   }, [error])
 
   return (
-    <>
+    <div> 
       {/* Top Bar */}
-      {/* <HomeTopBar /> */}
+      <HomeTopBar />
 
       <CenterBody tw="mt-20 mb-10 px-5">
         {/* Title */}
@@ -38,7 +38,7 @@ const HomePage: NextPage = () => {
           <GreeterContractInteractions />
         </div>
       </CenterBody>
-    </>
+    </div>
   )
 }
 

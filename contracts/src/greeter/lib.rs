@@ -25,7 +25,7 @@ mod greeter {
     }
 
     impl Auction {
-        /// Creates a new greeter contract initialized with the given value.
+       
         #[ink(constructor)]
         pub fn new(init_value: String) -> Self {
             let bidder_list = Mapping::default();
@@ -41,14 +41,12 @@ mod greeter {
             }
         }
 
-        /// Creates a new greeter contract initialized to 'Hello ink!'.
         #[ink(constructor)]
         pub fn default() -> Self {
             let default_message = String::from("Golden watch");
             Self::new(default_message)
         }
 
-        /// Returns the current value of `message`.
         #[ink(message)]
         pub fn product_name(&self) -> String {
             self.product.clone()
@@ -59,6 +57,8 @@ mod greeter {
             self.current_bidder.clone()
         }
 
+    
+
         #[ink(message)]
         pub fn get_current_owner(&self) ->  AccountId {
             self.current_owner.clone()
@@ -68,6 +68,11 @@ mod greeter {
         #[ink(message)]
         pub fn get_current_bid(&self) ->  Balance {
             self.current_bid.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_sold_status(&self) ->  bool {
+            self.sold.clone()
         }
 
         #[ink(message)]
@@ -141,16 +146,19 @@ mod greeter {
             }
         }
       
-
-        /// Sets `message` to the given value.
         #[ink(message)]
-        pub fn set_product_name(&mut self, new_value: String) {
+        pub fn set_product_name(&mut self, new_value: String)-> Result<(), Error> {
             self.product = new_value.clone();
+            if self.env().caller() != self.current_owner
+            {
+                return Err(Error::CallerIsNotRecipient);
+            }
             let from = self.env().caller();
             self.env().emit_event(Greeted {
                 from: Some(from),
                 message: new_value,
             });
+            Ok(())
         }
 
         
