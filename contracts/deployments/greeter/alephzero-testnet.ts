@@ -1,2 +1,2 @@
-export const address = '5CrtpVyLB8iaRPJyB39DvfGgHP1BLGpEfmb9XF1qzN5CFQbX'
-export const blockNumber = 41737105
+export const address = '5GNqP6unFFwPxdeUzLvskYHUxiWu3y4HkTYs86DHWqc5KiBH'
+export const blockNumber = 45321248
