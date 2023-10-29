@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xa4f9120c4ce76cd4856f9b715cb7c27460e2094e202ca75bb16b95cc21c811a5",
+    "hash": "0x59ecad04ae11b59f8ae668697802cdee6a0db7371a9f6c5ac70b62e91d7be4ae",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0",
     "build_info": {
@@ -85,26 +85,26 @@
         "displayName": [
           "BlockNumber"
         ],
-        "type": 15
+        "type": 22
       },
       "chainExtension": {
         "displayName": [
           "ChainExtension"
         ],
-        "type": 16
+        "type": 23
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 13
+        "type": 20
       },
       "maxEventTopics": 4,
       "timestamp": {
         "displayName": [
           "Timestamp"
         ],
-        "type": 14
+        "type": 21
       }
     },
     "events": [
@@ -118,7 +118,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 12
+              "type": 19
             }
           },
           {
@@ -178,6 +178,86 @@
           "type": 11
         },
         "selector": "0x1a66b880"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "get_current_bid",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 12
+        },
+        "selector": "0xb70b2eb8"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "get_all_bidders",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 13
+        },
+        "selector": "0xf94f3fea"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "bid_product",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x30eb5e8c"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "finalize_product",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xa4a00009"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "take_back_money",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x7825fd2d"
       },
       {
         "args": [
@@ -548,6 +628,235 @@
           "variant": {
             "variants": [
               {
+                "fields": [
+                  {
+                    "type": 4
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 4
+          },
+          {
+            "name": "E",
+            "type": 9
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 14
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 14
+          },
+          {
+            "name": "E",
+            "type": 9
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "tuple": [
+            6,
+            15
+          ]
+        }
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 4
+          }
+        }
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 17
+          },
+          {
+            "name": "E",
+            "type": 9
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "CallerIsNotSender"
+              },
+              {
+                "index": 1,
+                "name": "CallerIsNotRecipient"
+              },
+              {
+                "index": 2,
+                "name": "AmountIsLessThanWithdrawn"
+              },
+              {
+                "index": 3,
+                "name": "TransferFailed"
+              },
+              {
+                "index": 4,
+                "name": "NotYetExpired"
+              },
+              {
+                "index": 5,
+                "name": "InvalidSignature"
+              }
+            ]
+          }
+        },
+        "path": [
+          "greeter",
+          "greeter",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
                 "index": 0,
                 "name": "None"
               },
@@ -575,7 +884,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 20,
       "type": {
         "def": {
           "composite": {
@@ -595,7 +904,7 @@
       }
     },
     {
-      "id": 14,
+      "id": 21,
       "type": {
         "def": {
           "primitive": "u64"
@@ -603,7 +912,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 22,
       "type": {
         "def": {
           "primitive": "u32"
@@ -611,7 +920,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 23,
       "type": {
         "def": {
           "variant": {}

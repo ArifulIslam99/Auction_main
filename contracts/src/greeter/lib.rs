@@ -44,7 +44,7 @@ mod greeter {
         /// Creates a new greeter contract initialized to 'Hello ink!'.
         #[ink(constructor)]
         pub fn default() -> Self {
-            let default_message = String::from("Hello ink!");
+            let default_message = String::from("Golden watch");
             Self::new(default_message)
         }
 
@@ -56,8 +56,84 @@ mod greeter {
 
         #[ink(message)]
         pub fn get_current_bidder(&self) ->  AccountId {
-            self.current_bidder
+            self.current_bidder.clone()
         }
+
+        #[ink(message)]
+        pub fn get_current_bid(&self) ->  Balance {
+            self.current_bid.clone()
+        }
+
+        #[ink(message)]
+        pub fn get_all_bidders(&self) -> (Vec<AccountId>, Vec<Balance>) {
+            let mut temp_bids:Vec<Balance> = Vec::new();
+            for bidder in self.bidders.clone()  {
+                temp_bids.push(self.bidder_list.get(bidder).unwrap())
+            }
+            (self.bidders.clone(), temp_bids)
+        }
+
+
+        #[ink(message, payable)]
+        pub fn bid_product(&mut self) -> Result<(), Error> {
+            assert_ne!(self.sold, true);
+            assert_ne!(self.env().caller(), self.current_owner);
+            let bidder = self.bidder_list.get(&self.env().caller());
+            if bidder.is_some() {
+                return Err(Error::InvalidSignature);
+            }
+            let bid_amount = self.env().transferred_value();
+            if bid_amount > MINIMUM_BID {
+                self.current_bid += bid_amount;
+                self.current_bidder = self.env().caller();
+                self.bidders.push(self.env().caller());
+                self.bidder_list.insert(self.env().caller(), &bid_amount);
+            } else {
+                return Err(Error::AmountIsLessThanWithdrawn);
+            }
+            Ok(())
+        }
+
+        #[ink(message)]
+        pub fn finalize_product(&mut self) -> Result<(), Error> {
+            if self.env().caller() != self.current_owner {
+                return Err(Error::CallerIsNotSender);
+            }
+            if !self.sold {
+                self.price = self.current_bid;
+                self.sold = true;
+            } else {
+                return Err(Error::InvalidSignature);
+            }
+            Ok(())
+        }
+
+        #[ink(message)]
+        pub fn take_back_money(&mut self) -> Result<(), Error> {
+            if !self.sold {
+                return Err(Error::NotYetExpired);
+            }
+            if self.env().caller() == self.current_bidder {
+                return Err(Error::CallerIsNotRecipient);
+            }
+            let bid_amount = self.bidder_list.get(&self.env().caller());
+            if let Some(bid_amount) = bid_amount {
+                if bid_amount > 0 {
+                    let back_bid_amount = self.env().transfer(self.env().caller(), bid_amount);
+                    if back_bid_amount.is_ok() {
+                        self.bidder_list.insert(self.env().caller(), &0);
+                    } else {
+                        return Err(Error::TransferFailed);
+                    }
+                    Ok(())
+                } else {
+                    return Err(Error::AmountIsLessThanWithdrawn);
+                }
+            } else {
+                return Err(Error::InvalidSignature);
+            }
+        }
+      
 
         /// Sets `message` to the given value.
         #[ink(message)]
@@ -76,6 +152,14 @@ mod greeter {
             self.product = self.product.chars().rev().collect::<String>();
         }
     }
-
-    
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    pub enum Error {
+        CallerIsNotSender,
+        CallerIsNotRecipient,
+        AmountIsLessThanWithdrawn,
+        TransferFailed,
+        NotYetExpired,
+        InvalidSignature,
+    }
 }

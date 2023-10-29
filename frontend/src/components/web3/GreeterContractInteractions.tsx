@@ -19,6 +19,7 @@ export const GreeterContractInteractions: FC = () => {
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Greeter)
   const [greeterMessage, setGreeterMessage] = useState<string>()
   const [currentBidder, setCurrentBidder] = useState<string>()
+  const [currentBid, setCurrentBid] = useState<string>()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>()
   const [updateIsLoading, setUpdateIsLoading] = useState<boolean>()
   const { register, reset, handleSubmit } = useForm<UpdateGreetingValues>()
@@ -46,7 +47,7 @@ export const GreeterContractInteractions: FC = () => {
   }, [contract])
 
 
-   // Fetch Greeting
+   // Fetch Current Bidder
    const fetchCurrentBidder = async () => {
     if (!contract || !api) return
 
@@ -67,6 +68,28 @@ export const GreeterContractInteractions: FC = () => {
   useEffect(() => {
     fetchProduct()
   }, [contract])
+
+     // Fetch Current Bid
+     const fetchCurrentBid = async () => {
+      if (!contract || !api) return
+  
+      setFetchIsLoading(true)
+      try {
+        const result = await contractQuery(api, '', contract, 'getCurrentBid')
+        const { output, isError, decodedOutput } = decodeOutput(result, contract, 'getCurrentBid')
+        if (isError) throw new Error(decodedOutput)
+        setCurrentBid(output)
+      } catch (e) {
+        console.error(e)
+        toast.error('Error while fetching greeting. Try again…')
+        setGreeterMessage(undefined)
+      } finally {
+        setFetchIsLoading(false)
+      }
+    }
+    useEffect(() => {
+      fetchProduct()
+    }, [contract])
 
   // Update Greeting
   const updateGreeting = async ({ newMessage }: UpdateGreetingValues) => {
@@ -90,14 +113,17 @@ export const GreeterContractInteractions: FC = () => {
     }
   }
   console.log(currentBidder)
-  const reverseGreeting = async () => {
+  const makeBid = async () => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       toast.error("Wallet is not connected. Try again...")
       return
     }
+
     setUpdateIsLoading(true)
     try {
-      await contractTxWithToast(api, activeAccount.address, contract, "reverseMessage", {}, [])
+      await contractTxWithToast(api, activeAccount.address, contract, "bidProduct", {
+        value: 200000000
+      }, [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -105,9 +131,8 @@ export const GreeterContractInteractions: FC = () => {
       await fetchProduct()
     }
   }
-
   if (!api) return null
-
+  
   return (
     <>
       <div tw="flex grow flex-col space-y-4 max-w-[20rem]">
@@ -137,6 +162,19 @@ export const GreeterContractInteractions: FC = () => {
           </FormControl>
         </Card>
 
+         {/* Fetched Current Bid */}
+         <Card variant="outline" p={4} bgColor="whiteAlpha.100">
+          <FormControl>
+            <FormLabel>Current Bid</FormLabel>
+            <Input
+              placeholder={fetchIsLoading || !contract ? 'Loading…' : currentBid}
+              
+              readOnly
+            />
+          </FormControl>
+        </Card>
+
+
 
         {/* Update Greeting */}
         <Card variant="outline" p={4} bgColor="whiteAlpha.100">
@@ -165,7 +203,21 @@ export const GreeterContractInteractions: FC = () => {
             isLoading={updateIsLoading}
             disabled={updateIsLoading}
             type='button'
-            onClick={reverseGreeting}
+            // onClick={reverseGreeting}
+            onClick={()=>{fetchCurrentBid(); fetchCurrentBidder()}}
+          >
+            Bid Status!
+          </Button>
+        </Card>
+
+        <Card variant="outline" p={4} bgColor="whatsapp.100">
+          <Button
+            colorScheme='purple'
+            isLoading={updateIsLoading}
+            disabled={updateIsLoading}
+            type='button'
+            onClick={makeBid}
+         
           >
             Make a Bid!
           </Button>
