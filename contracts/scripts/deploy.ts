@@ -23,7 +23,7 @@ dotenv.config({
  */
 const main = async () => {
   // [KEEP THIS] Initialization
-  const accountUri = process.env.ACCOUNT_URI || '//Alice'
+  const accountUri = process.env.ACCOUNT_URI || 'calm first update idea apart expose nation tonight gym special rib disease'
   const { api, chain, account } = await initPolkadotJs(chainId, accountUri)
 
   // Deploy greeter contract

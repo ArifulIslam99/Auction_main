@@ -157,6 +157,46 @@ export const GreeterContractInteractions: FC = () => {
       // location.reload();
     }
   }
+
+   //Sell the product
+   const finalizeProduct = async () => {
+    if (!activeAccount || !contract || !activeSigner || !api) {
+      toast.error("Wallet is not connected. Try again...")
+      return
+    }
+
+    setUpdateIsLoading(true)
+    try {
+      await contractTxWithToast(api, activeAccount.address, contract, "finalize_product", {},[])
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setUpdateIsLoading(false)
+      await fetchProduct()
+      // location.reload();
+    }
+  }
+
+  //Sell the product
+  const returnMoney = async () => {
+    if (!activeAccount || !contract || !activeSigner || !api) {
+      toast.error("Wallet is not connected. Try again...")
+      return
+    }
+
+    setUpdateIsLoading(true)
+    try {
+      await contractTxWithToast(api, activeAccount.address, contract, "take_back_money", {},[])
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setUpdateIsLoading(false)
+      await fetchProduct()
+      // location.reload();
+    }
+  }
+
+
   if (!api) return null
 
   return (
@@ -258,6 +298,32 @@ export const GreeterContractInteractions: FC = () => {
 
           >
             Make a Bid!
+          </Button>  
+        </Card>
+
+        <Card variant="outline" p={4} bgColor="whatsapp.100">
+          <Button
+            colorScheme='purple'
+            isLoading={updateIsLoading}
+            disabled={updateIsLoading}
+            type='button'
+            onClick={finalizeProduct}
+
+          >
+            Sell The Product!
+          </Button>
+        </Card>
+
+        <Card variant="outline" p={4} bgColor="whatsapp.100">
+          <Button
+            colorScheme='purple'
+            isLoading={updateIsLoading}
+            disabled={updateIsLoading}
+            type='button'
+            onClick={returnMoney}
+
+          >
+            Get Back Money
           </Button>
         </Card>
 

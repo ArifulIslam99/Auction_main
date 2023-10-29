@@ -108,6 +108,7 @@ mod greeter {
             if !self.sold {
                 self.price = self.current_bid;
                 self.sold = true;
+                self.current_owner = self.current_bidder;
             } else {
                 return Err(Error::InvalidSignature);
             }
